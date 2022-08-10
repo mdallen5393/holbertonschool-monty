@@ -12,21 +12,23 @@ int main(int argc, char **argv)
 	void (*f)(stack_t **, unsigned int) = NULL;
 	char *buffer = NULL, op[50], pushNum[50];
 	size_t bufsize = 0;
-	stack_t **stack;
+	stack_t **stack = NULL;
 	unsigned int line_number = 0;
 
 	if (argc != 2)
+	{
 		fprintf(stderr, "USAGE: monty file\n");
 		exit(EXIT_FAILURE);
+	}
 	file = fopen(argv[1], "r");
 	if (!file)
 	{
 		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
-	while (getline(&buffer, &bufsize, stdin) != -1)
+	while (getline(&buffer, &bufsize, file) != -1)
 	{
-		strcpy(op, strtok(buffer, " \n"));
+		strcpy(op, strtok(buffer, " \t\n"));
 		f = get_func(op, line_number);
 		if (!f)
 		{
@@ -35,7 +37,7 @@ int main(int argc, char **argv)
 			exit(EXIT_FAILURE);
 		}
 		if (strcmp(op, "push"))
-			strcpy(pushNum, strtok(NULL, " \n"));
+			strcpy(pushNum, strtok(NULL, " \t\n"));
 		free(buffer);
 		buffer = NULL;
 		f(stack, line_number);
