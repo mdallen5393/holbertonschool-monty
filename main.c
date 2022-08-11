@@ -20,11 +20,8 @@ int main(int argc, char **argv)
 		fprintf(stderr, "USAGE: monty file\n"), exit(EXIT_FAILURE);
 	file = fopen(argv[1], "r");
 	if (!file)
-	{
-		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
-		exit(EXIT_FAILURE);
-	}
-	while (getline(&buffer, &bufsize, file) != EOF)
+		fprintf(stderr, "Error: Can't open file %s\n", argv[1]), exit(EXIT_FAILURE);
+	for (; getline(&buffer, &bufsize, file) != EOF; line_number++)
 	{
 		token = strtok((buffer), " \t\n");
 		if (!token)
@@ -35,19 +32,24 @@ int main(int argc, char **argv)
 		strcpy(op, token);
 		f = get_func(op, line_number);
 		if (!f)
-		{
 			fprintf(stderr, "Error: malloc failed\n"), err();
-		}
 		if (strcmp(op, "push") == 0)
-			strcpy(pushNum, strtok(NULL, " \t\n"));
+		{
+			token = strtok(NULL, " \t\n");
+			if (!token)
+			{
+				free(buffer), buffer = NULL;
+				fprintf(stderr, "L%d: usage: push integer\n", line_number), err();
+			}
+			strcpy(pushNum, token);
+		}
 		free(buffer), buffer = NULL;
 		f(&stack, line_number);
 		if (strcmp(op, "push") == 0)
 			pushOp(&stack, line_number, pushNum);
-		line_number++;
 	}
 	free(buffer), fclose(file);
-	return (0);
+	return (EXIT_SUCCESS);
 }
 
 
@@ -106,6 +108,7 @@ void pushOp(stack_t **stack, unsigned int line_number, char *pushNum)
 		(*stack)->n = atoi(pushNum);
 		if ((*stack)->n == 0)
 		{
+			pop(stack, line_number);
 			fprintf(stderr, "Error: L%d: usage: push integer\n", line_number);
 			err();
 		}
