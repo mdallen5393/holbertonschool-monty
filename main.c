@@ -11,7 +11,7 @@ FILE *file = NULL;
 int main(int argc, char **argv)
 {
 	void (*f)(stack_t **, unsigned int) = NULL;
-	char *buffer = NULL, op[50] = {'\0'}, pushNum[50] = {'\0'};
+	char *buffer = NULL, op[50] = {'\0'}, pushNum[50] = {'\0'}, *token = NULL;
 	size_t bufsize = 0;
 	stack_t *stack = NULL;
 	unsigned int line_number = 1;
@@ -28,9 +28,15 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
-	while (getline(&buffer, &bufsize, file) != -1)
+	while (getline(&buffer, &bufsize, file) != EOF)
 	{
-		strcpy(op, strtok(buffer, " \t\n"));
+		if (!(token = strtok(buffer, " \t\n")))
+		{
+			free(buffer);
+			buffer = NULL;
+			continue;
+		}
+		strcpy(op, token);
 		f = get_func(op, line_number);
 		if (!f)
 		{
