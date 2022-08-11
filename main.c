@@ -13,8 +13,9 @@ int main(int argc, char **argv)
 	void (*f)(stack_t **, unsigned int) = NULL;
 	char *buffer = NULL, op[50], pushNum[50];
 	size_t bufsize = 0;
-	stack_t **stack = NULL;
-	unsigned int line_number = 0;
+	stack_t *stack = NULL;
+	unsigned int line_number = 1;
+
 
 	if (argc != 2)
 	{
@@ -40,9 +41,9 @@ int main(int argc, char **argv)
 			strcpy(pushNum, strtok(NULL, " \t\n"));
 		free(buffer);
 		buffer = NULL;
-		f(stack, line_number);
+		f(&stack, line_number);
 		if (strcmp(op, "push") == 0)
-			pushOp(stack, line_number, pushNum);
+			pushOp(&stack, line_number, pushNum);
 		line_number++;
 	}
 	return (0);
@@ -104,7 +105,7 @@ void pushOp(stack_t **stack, unsigned int line_number, char *pushNum)
 		(*stack)->n = atoi(pushNum);
 		if ((*stack)->n == 0)
 		{
-			fprintf(stderr, "Error: L%d: usage: push integer", line_number);
+			fprintf(stderr, "Error: L%d: usage: push integer\n", line_number);
 			err();
 		}
 	}
