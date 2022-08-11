@@ -11,7 +11,7 @@ FILE *file = NULL;
 int main(int argc, char **argv)
 {
 	void (*f)(stack_t **, unsigned int) = NULL;
-	char *buffer = NULL, op[50], pushNum[50];
+	char *buffer = NULL, op[50] = {'\0'}, pushNum[50] = {'\0'};
 	size_t bufsize = 0;
 	stack_t *stack = NULL;
 	unsigned int line_number = 1;
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 			fprintf(stderr, "Error: malloc failed\n");
 			err();
 		}
-		if (strcmp(op, "push"))
+		if (strcmp(op, "push") == 0)
 			strcpy(pushNum, strtok(NULL, " \t\n"));
 		free(buffer);
 		buffer = NULL;
@@ -71,12 +71,12 @@ void (*get_func(char *opcode, int line_number))(stack_t **, unsigned int)
 
 	while (strcmp(opcode, instruction[i].opcode) != 0)
 	{
+		i++;
 		if (i > 7)
 		{
 			fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
 			err();
 		}
-		i++;
 	}
 	return (instruction[i].f);
 }
