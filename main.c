@@ -38,8 +38,8 @@ int main(int argc, char **argv)
 			token = strtok(NULL, " \t\n");
 			if (!token)
 			{
-				free(buffer), buffer = NULL;
-				fprintf(stderr, "L%d: usage: push integer\n", line_number), free_stack(&stack), err();
+				free(buffer), buffer = NULL, free_stack(&stack);
+				fprintf(stderr, "L%d: usage: push integer\n", line_number), err();
 			}
 			strcpy(pushNum, token);
 		}
@@ -55,11 +55,12 @@ int main(int argc, char **argv)
 
 /**
  * get_func - finds function to use to execute the desired opcode
- * @opcode: string used to find correct function
- * @line_number: line number of current opcode
+ * @stack: stack to operate on
+ * @code: string used to find correct function
+ * @l: line number of current opcode
  * Return: pointer to desired function
  */
-void (*get_func(stack_t **stack, int line_number, char *opcode))(stack_t **, unsigned int)
+void (*get_func(stack_t **stack, int l, char *code))(stack_t **, unsigned int)
 {
 	instruction_t instruction[] = {
 		{"push", push},
@@ -72,12 +73,12 @@ void (*get_func(stack_t **stack, int line_number, char *opcode))(stack_t **, uns
 	};
 	int i = 0;
 
-	while (strcmp(opcode, instruction[i].opcode) != 0)
+	while (strcmp(code, instruction[i].opcode) != 0)
 	{
 		i++;
 		if (i > 7)
 		{
-			fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
+			fprintf(stderr, "L%d: unknown instruction %s\n", l, code);
 			free_stack(stack);
 			err();
 		}
