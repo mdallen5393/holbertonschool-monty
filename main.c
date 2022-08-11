@@ -17,9 +17,7 @@ int main(int argc, char **argv)
 	unsigned int line_number = 1;
 
 	if (argc != 2)
-	{
 		fprintf(stderr, "USAGE: monty file\n"), exit(EXIT_FAILURE);
-	}
 	file = fopen(argv[1], "r");
 	if (!file)
 	{
@@ -48,6 +46,7 @@ int main(int argc, char **argv)
 			pushOp(&stack, line_number, pushNum);
 		line_number++;
 	}
+	free(buffer), fclose(file);
 	return (0);
 }
 
