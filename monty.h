@@ -40,7 +40,7 @@ typedef struct instruction_s
 
 
 /* --- FUNCTION PROTOTYPES --- */
-void (*get_func(stack_t **stack, int line_number, char *opcode))(stack_t **, unsigned int);
+void (*get_func(stack_t **stack, int l, char *code))(stack_t **, unsigned int);
 void err(void);
 void pushOp(stack_t **stack, unsigned int line_number, char *pushNum);
 void free_stack(stack_t **stack);
