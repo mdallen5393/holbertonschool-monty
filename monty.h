@@ -41,6 +41,8 @@ typedef struct instruction_s
 
 /* --- FUNCTION PROTOTYPES --- */
 void (*get_func(char *opcode, int line_number))(stack_t **, unsigned int);
+void err(void);
+void pushOp(stack_t **stack, unsigned int line_number, char *pushNum);
 /* opcodes */
 void push(stack_t **stack, unsigned int line_number);
 void pall(stack_t **stack, unsigned int line_number);

@@ -1,6 +1,7 @@
 #include "monty.h"
 
 FILE *file = NULL;
+
 /**
  * main - runs monty bytecode interpreter
  * @argc: argument count
@@ -33,8 +34,7 @@ int main(int argc, char **argv)
 		if (!f)
 		{
 			fprintf(stderr, "Error: malloc failed\n");
-			fclose(file);
-			exit(EXIT_FAILURE);
+			err();
 		}
 		if (strcmp(op, "push"))
 			strcpy(pushNum, strtok(NULL, " \t\n"));
@@ -42,29 +42,17 @@ int main(int argc, char **argv)
 		buffer = NULL;
 		f(stack, line_number);
 		if (strcmp(op, "push") == 0)
-		{
-			if (strcmp(pushNum, "0") == 0)
-				(*stack)->n = 0;
-			if (strcmp(pushNum, "0") != 0)
-			{
-				(*stack)->n = atoi(pushNum);
-				if ((*stack)->n == 0)
-				{
-					fprintf(stderr, "Error: L%d: usage: push integer", line_number);
-					fclose(file);
-					exit(EXIT_FAILURE);
-				}
-			}
-		}
+			pushOp(stack, line_number, pushNum);
 		line_number++;
 	}
 	return (0);
 }
 
 
- /**
+/**
  * get_func - finds function to use to execute the desired opcode
  * @opcode: string used to find correct function
+ * @line_number: line number of current opcode
  * Return: pointer to desired function
  */
 void (*get_func(char *opcode, int line_number))(stack_t **, unsigned int)
@@ -85,10 +73,39 @@ void (*get_func(char *opcode, int line_number))(stack_t **, unsigned int)
 		if (i > 7)
 		{
 			fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
-			fclose(file);
-			exit(EXIT_FAILURE);
+			err();
 		}
 		i++;
 	}
 	return (instruction[i].f);
+}
+
+/**
+ * err - error handler
+ */
+void err(void)
+{
+	fclose(file);
+	exit(EXIT_FAILURE);
+}
+
+/**
+ * pushOp - helper for push operation; sets value for new node
+ * @stack: linked list stack to push to
+ * @line_number: current line number of bytecode file
+ * @pushNum: number to add to new node
+ */
+void pushOp(stack_t **stack, unsigned int line_number, char *pushNum)
+{
+	if (strcmp(pushNum, "0") == 0)
+		(*stack)->n = 0;
+	if (strcmp(pushNum, "0") != 0)
+	{
+		(*stack)->n = atoi(pushNum);
+		if ((*stack)->n == 0)
+		{
+			fprintf(stderr, "Error: L%d: usage: push integer", line_number);
+			err();
+		}
+	}
 }

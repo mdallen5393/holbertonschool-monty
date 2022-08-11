@@ -22,6 +22,7 @@ void push(stack_t **stack, unsigned int line_number)
 
 	if (*stack)
 		(*stack)->prev = newNode;
+
 	newNode->prev = NULL;
 	newNode->next = *stack;
 	newNode->n = 0;
@@ -46,6 +47,7 @@ void pop(stack_t **stack, unsigned int line_number)
 	}
 
 	*stack = temp->next;
+	(*stack)->prev = NULL;
 	free(temp);
 }
 
