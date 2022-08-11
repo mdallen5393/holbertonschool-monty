@@ -49,8 +49,8 @@ void add(stack_t **stack, unsigned int line_number)
 	if (!temp || !temp->next)
 	{
 		fprintf(stderr, "L%d: can't add, stack too short\n", line_number);
-		fclose(file);
-		exit(EXIT_FAILURE);
+		free_stack(stack);
+		err();
 	}
 
 	temp->next->n += temp->n;

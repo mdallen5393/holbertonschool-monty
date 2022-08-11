@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 			continue;
 		}
 		strcpy(op, token);
-		f = get_func(op, line_number);
+		f = get_func(&stack, line_number, op);
 		if (!f)
 			fprintf(stderr, "Error: malloc failed\n"), err();
 		if (strcmp(op, "push") == 0)
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 			if (!token)
 			{
 				free(buffer), buffer = NULL;
-				fprintf(stderr, "L%d: usage: push integer\n", line_number), err();
+				fprintf(stderr, "L%d: usage: push integer\n", line_number), free_stack(&stack), err();
 			}
 			strcpy(pushNum, token);
 		}
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
  * @line_number: line number of current opcode
  * Return: pointer to desired function
  */
-void (*get_func(char *opcode, int line_number))(stack_t **, unsigned int)
+void (*get_func(stack_t **stack, int line_number, char *opcode))(stack_t **, unsigned int)
 {
 	instruction_t instruction[] = {
 		{"push", push},
@@ -78,6 +78,7 @@ void (*get_func(char *opcode, int line_number))(stack_t **, unsigned int)
 		if (i > 7)
 		{
 			fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
+			free_stack(stack);
 			err();
 		}
 	}
@@ -108,9 +109,23 @@ void pushOp(stack_t **stack, unsigned int line_number, char *pushNum)
 		(*stack)->n = atoi(pushNum);
 		if ((*stack)->n == 0)
 		{
-			pop(stack, line_number);
 			fprintf(stderr, "Error: L%d: usage: push integer\n", line_number);
+			free_stack(stack);
 			err();
 		}
 	}
+}
+
+/**
+ * free_stack - frees a linked list stack.
+ * @stack: stack to free
+ */
+void free_stack(stack_t **stack)
+{
+	if (!(stack))
+	{
+		return;
+	}
+	free_stack(stack);
+	*stack = NULL;
 }

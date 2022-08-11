@@ -14,6 +14,7 @@ void push(stack_t **stack, unsigned int line_number)
 	if (!newNode)
 	{
 		fprintf(stderr, "Error: malloc failed\n");
+		free_stack(stack);
 		err();
 	}
 
@@ -42,6 +43,7 @@ void pop(stack_t **stack, unsigned int line_number)
 	{
 		fprintf(stderr, "L%d: can't pop an empty stack\n", line_number);
 		fclose(file);
+		free_stack(stack);
 		exit(EXIT_FAILURE);
 	}
 
@@ -62,6 +64,7 @@ void pint(stack_t **stack, unsigned int line_number)
 	{
 		fprintf(stderr, "L%d: can't pint, stack empty\n", line_number);
 		fclose(file);
+		free_stack(stack);
 		exit(EXIT_FAILURE);
 	}
 
