@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 		if (strcmp(op, "push") == 0)
 			pushOp(&stack, line_number, pushNum);
 	}
-	free(buffer), fclose(file);
+	free(buffer), fclose(file), free_stack(&stack);
 	return (EXIT_SUCCESS);
 }
 
@@ -123,10 +123,11 @@ void pushOp(stack_t **stack, unsigned int line_number, char *pushNum)
  */
 void free_stack(stack_t **stack)
 {
-	if (!(stack))
+	if (!(stack) || !(*stack))
 	{
 		return;
 	}
-	free_stack(stack);
+	free_stack(&((*stack)->next));
+	free(*stack);
 	*stack = NULL;
 }
