@@ -16,11 +16,9 @@ int main(int argc, char **argv)
 	stack_t *stack = NULL;
 	unsigned int line_number = 1;
 
-
 	if (argc != 2)
 	{
-		fprintf(stderr, "USAGE: monty file\n");
-		exit(EXIT_FAILURE);
+		fprintf(stderr, "USAGE: monty file\n"), exit(EXIT_FAILURE);
 	}
 	file = fopen(argv[1], "r");
 	if (!file)
@@ -30,23 +28,21 @@ int main(int argc, char **argv)
 	}
 	while (getline(&buffer, &bufsize, file) != EOF)
 	{
-		if (!(token = strtok(buffer, " \t\n")))
+		token = strtok((buffer), " \t\n");
+		if (!token)
 		{
-			free(buffer);
-			buffer = NULL;
+			free(buffer), buffer = NULL;
 			continue;
 		}
 		strcpy(op, token);
 		f = get_func(op, line_number);
 		if (!f)
 		{
-			fprintf(stderr, "Error: malloc failed\n");
-			err();
+			fprintf(stderr, "Error: malloc failed\n"), err();
 		}
 		if (strcmp(op, "push") == 0)
 			strcpy(pushNum, strtok(NULL, " \t\n"));
-		free(buffer);
-		buffer = NULL;
+		free(buffer), buffer = NULL;
 		f(&stack, line_number);
 		if (strcmp(op, "push") == 0)
 			pushOp(&stack, line_number, pushNum);
